@@ -1,5 +1,6 @@
 export type Category = 'knee' | 'hip' | 'shoulder' | 'spine' | 'ankle' | 'acl' | 'full_body'
 export type Difficulty = 1 | 2 | 3 | 4 | 5
+export type Position = 'standing' | 'seated' | 'floor'
 
 export interface PoseRule {
   // landmark indices: [A, vertex, C] — angle is measured at vertex
@@ -1632,4 +1633,79 @@ export const difficultyColors: Record<Difficulty, string> = {
   3: '#f59e0b',
   4: '#f97316',
   5: '#ef4444',
+}
+
+export const exercisePositions: Record<string, Position> = {
+  // Knee
+  'knee-ankle-pumps': 'floor',
+  'knee-quad-sets': 'floor',
+  'knee-heel-slides': 'floor',
+  'knee-slr': 'floor',
+  'knee-short-arc-quad': 'floor',
+  'knee-seated-bends': 'seated',
+  'knee-terminal-extension': 'standing',
+  'knee-mini-squat': 'standing',
+  'knee-step-up': 'standing',
+  'knee-wall-squat': 'standing',
+  'knee-knee-extension-resistance': 'seated',
+  'knee-single-leg-stance': 'standing',
+  'knee-lateral-band-walk': 'standing',
+  // Hip
+  'hip-ankle-circles': 'floor',
+  'hip-abduction-lying': 'floor',
+  'hip-slr': 'floor',
+  'hip-standing-flexion': 'standing',
+  'hip-standing-abduction': 'standing',
+  'hip-bridges': 'floor',
+  'hip-clamshells': 'floor',
+  'hip-sidelying-abduction': 'floor',
+  'hip-step-up': 'standing',
+  'hip-single-leg-bridge': 'floor',
+  // Shoulder
+  'shoulder-pendulum': 'standing',
+  'shoulder-scapular-squeeze': 'standing',
+  'shoulder-passive-flexion': 'standing',
+  'shoulder-active-assisted-flexion': 'standing',
+  'shoulder-external-rotation': 'floor',
+  'shoulder-internal-rotation': 'standing',
+  'shoulder-wall-climb': 'standing',
+  'shoulder-tyw': 'floor',
+  'shoulder-wall-pushup': 'standing',
+  'shoulder-band-row': 'standing',
+  'shoulder-band-ext-rotation': 'standing',
+  'shoulder-full-can': 'standing',
+  // Spine
+  'spine-breathing': 'floor',
+  'spine-pelvic-tilt': 'floor',
+  'spine-knee-to-chest': 'floor',
+  'spine-double-knee-to-chest': 'floor',
+  'spine-bridges': 'floor',
+  'spine-cat-cow': 'floor',
+  'spine-seated-march': 'seated',
+  'spine-bird-dog': 'floor',
+  'spine-prone-pressup': 'floor',
+  'spine-dead-bug': 'floor',
+  'spine-plank': 'floor',
+  // ACL
+  'acl-calf-raises': 'standing',
+  'acl-tle-band': 'standing',
+  'acl-lateral-step-up': 'standing',
+  'acl-balance-reach': 'standing',
+  'acl-reverse-lunge': 'standing',
+  // Ankle
+  'ankle-alphabet': 'seated',
+  'ankle-towel-stretch': 'floor',
+  // Full body
+  'fb-standing-balance': 'standing',
+  'fb-seated-posture': 'seated',
+}
+
+export function getPosition(exerciseId: string): Position {
+  return exercisePositions[exerciseId] ?? 'standing'
+}
+
+export const positionLabels: Record<Position, string> = {
+  standing: 'Standing',
+  seated: 'Seated',
+  floor: 'Floor / Mat',
 }

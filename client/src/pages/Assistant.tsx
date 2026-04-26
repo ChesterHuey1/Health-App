@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, MessageCircle, Sparkles } from 'lucide-react'
+import { Send, Loader2 } from 'lucide-react'
 import { useUserStore } from '../store/userStore'
 import { useScheduleStore } from '../store/scheduleStore'
 import { exercises, categoryLabels } from '../data/exercises'
+import { Topbar } from '../components/layout/Topbar'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -100,36 +101,40 @@ Instructions:
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-[#2a2d3e] flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-[#4f8ef7]/20 flex items-center justify-center">
-          <Sparkles size={18} className="text-[#4f8ef7]" />
-        </div>
-        <div>
-          <h1 className="text-white font-semibold">AI PT Assistant</h1>
-          <p className="text-[#64748b] text-xs">Powered by DeepSeek · Personalized to your recovery</p>
-        </div>
-        <div className="ml-auto flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
-          <p className="text-[#22c55e] text-xs">Online</p>
-        </div>
-      </div>
+      <Topbar
+        title="AI PT Assistant"
+        subtitle="Personalized to your recovery · Powered by DeepSeek"
+        actions={
+          <div className="flex items-center gap-1.5">
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27A060' }} />
+            <p style={{ fontSize: 12, fontWeight: 600, color: '#27A060' }}>Online</p>
+          </div>
+        }
+      />
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-[24px_28px] space-y-4">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-full bg-[#4f8ef7]/20 flex items-center justify-center flex-shrink-0 mt-0.5 mr-2">
-                <MessageCircle size={14} className="text-[#4f8ef7]" />
+              <div
+                className="flex-shrink-0 mt-0.5 mr-2.5"
+                style={{ width: 30, height: 30, borderRadius: '50%', background: '#D6F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" width={14} height={14}>
+                  <circle cx="12" cy="12" r="9" stroke="#1A7FA8" strokeWidth="1.8"/>
+                  <circle cx="12" cy="12" r="5" stroke="#1A7FA8" strokeWidth="1.8"/>
+                  <circle cx="12" cy="12" r="1" fill="#1A7FA8"/>
+                </svg>
               </div>
             )}
             <div
-              className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+              className="max-w-[70%] px-4 py-3 rounded-[16px] text-[13px] leading-relaxed whitespace-pre-wrap"
+              style={
                 msg.role === 'user'
-                  ? 'bg-[#4f8ef7] text-white rounded-br-sm'
-                  : 'bg-[#1a1d27] border border-[#2a2d3e] text-[#e2e8f0] rounded-bl-sm'
-              }`}
+                  ? { background: '#1A3D5C', color: '#fff', borderBottomRightRadius: 4 }
+                  : { background: '#fff', color: '#0F1E2B', borderBottomLeftRadius: 4, border: '1px solid #E2E8ED' }
+              }
             >
               {msg.content}
             </div>
@@ -137,11 +142,18 @@ Instructions:
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="w-7 h-7 rounded-full bg-[#4f8ef7]/20 flex items-center justify-center flex-shrink-0 mt-0.5 mr-2">
-              <MessageCircle size={14} className="text-[#4f8ef7]" />
+            <div
+              className="flex-shrink-0 mt-0.5 mr-2.5"
+              style={{ width: 30, height: 30, borderRadius: '50%', background: '#D6F0F5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" width={14} height={14}>
+                <circle cx="12" cy="12" r="9" stroke="#1A7FA8" strokeWidth="1.8"/>
+                <circle cx="12" cy="12" r="5" stroke="#1A7FA8" strokeWidth="1.8"/>
+                <circle cx="12" cy="12" r="1" fill="#1A7FA8"/>
+              </svg>
             </div>
-            <div className="bg-[#1a1d27] border border-[#2a2d3e] px-4 py-3 rounded-2xl rounded-bl-sm">
-              <Loader2 size={16} className="text-[#64748b] animate-spin" />
+            <div className="px-4 py-3 rounded-[16px] rounded-bl-sm" style={{ background: '#fff', border: '1px solid #E2E8ED' }}>
+              <Loader2 size={16} style={{ color: '#9BAAB6' }} className="animate-spin" />
             </div>
           </div>
         )}
@@ -150,14 +162,22 @@ Instructions:
 
       {/* Quick prompts */}
       {messages.length <= 1 && (
-        <div className="px-6 pb-3">
-          <p className="text-[#64748b] text-xs mb-2">Common questions</p>
+        <div className="px-7 pb-3">
+          <p style={{ fontSize: 11, fontWeight: 600, color: '#7A909F', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+            Common questions
+          </p>
           <div className="flex flex-wrap gap-2">
             {QUICK_PROMPTS.map((p) => (
               <button
                 key={p}
                 onClick={() => send(p)}
-                className="text-xs px-3 py-1.5 bg-[#1a1d27] border border-[#2a2d3e] text-[#94a3b8] rounded-lg hover:border-[#4f8ef7]/40 hover:text-white transition-colors"
+                className="text-[12px] font-medium transition-all cursor-pointer"
+                style={{
+                  padding: '6px 12px', borderRadius: 99,
+                  border: '1.5px solid #E2E8ED', background: '#fff', color: '#5A7080',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#1A7FA8'; e.currentTarget.style.color = '#1A7FA8' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E2E8ED'; e.currentTarget.style.color = '#5A7080' }}
               >
                 {p}
               </button>
@@ -167,7 +187,7 @@ Instructions:
       )}
 
       {/* Input */}
-      <div className="px-6 pb-6 pt-3 border-t border-[#2a2d3e]">
+      <div className="px-7 pb-6 pt-3" style={{ borderTop: '1px solid #E2E8ED', background: '#fff' }}>
         <div className="flex gap-3">
           <input
             type="text"
@@ -175,17 +195,25 @@ Instructions:
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && send()}
             placeholder="Ask about your recovery, exercises, pain…"
-            className="flex-1 bg-[#1a1d27] border border-[#2a2d3e] text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-[#4f8ef7] transition-colors placeholder-[#64748b]"
+            className="flex-1 outline-none text-[14px] transition-colors"
+            style={{
+              background: '#F4F6F8', border: '1.5px solid #E2E8ED',
+              borderRadius: 9, padding: '11px 14px',
+              color: '#0F1E2B', fontFamily: 'DM Sans, sans-serif',
+            }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = '#1A7FA8')}
+            onBlur={(e) => (e.currentTarget.style.borderColor = '#E2E8ED')}
           />
           <button
             onClick={() => send()}
             disabled={!input.trim() || loading}
-            className="px-4 py-3 bg-[#4f8ef7] hover:bg-[#6ba3ff] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl transition-colors"
+            className="flex items-center justify-center rounded-[9px] transition-colors cursor-pointer disabled:opacity-40"
+            style={{ width: 46, background: '#1A3D5C', border: 'none', flexShrink: 0 }}
           >
-            <Send size={18} />
+            <Send size={16} style={{ color: '#fff' }} />
           </button>
         </div>
-        <p className="text-[#64748b] text-xs mt-2 text-center">
+        <p style={{ fontSize: 11, color: '#9BAAB6', textAlign: 'center', marginTop: 8 }}>
           AI guidance only — always follow your licensed PT's instructions.
         </p>
       </div>

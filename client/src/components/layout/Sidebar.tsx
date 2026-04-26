@@ -1,59 +1,142 @@
 import { NavLink } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  Dumbbell,
-  Calendar,
-  BookOpen,
-  MessageCircle,
-  Heart,
+  Home, Calendar, BookOpen, Bot, Plus, Settings, Target,
 } from 'lucide-react'
+import { useUserStore } from '../../store/userStore'
+import { categoryLabels } from '../../data/exercises'
 
-const links = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/library', icon: BookOpen, label: 'Exercises' },
-  { to: '/schedule', icon: Calendar, label: 'Schedule' },
-  { to: '/assistant', icon: MessageCircle, label: 'AI Assistant' },
+const NAV_MAIN = [
+  { to: '/dashboard', label: 'Dashboard', Icon: Home },
+  { to: '/schedule', label: 'My Schedule', Icon: Calendar },
+  { to: '/library', label: 'PT Library', Icon: BookOpen },
+  { to: '/assistant', label: 'AI Assistant', Icon: Bot },
 ]
 
 export function Sidebar() {
+  const { profile, todayCheckin } = useUserStore()
+  const hasCheckin = !!todayCheckin()
+
+  const initials = profile.name
+    ? profile.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
+    : 'PT'
+
+  const weekNum = profile.surgeryDate
+    ? Math.max(1, Math.floor((Date.now() - new Date(profile.surgeryDate).getTime()) / (1000 * 60 * 60 * 24 * 7)) + 1)
+    : 1
+
+  const surgeryShort = profile.surgeryType
+    ? categoryLabels[profile.surgeryType].split(' ')[0]
+    : 'PT'
+
   return (
-    <aside className="w-[220px] min-w-[220px] flex flex-col gap-1 bg-[#1a1d27] border-r border-[#2a2d3e] px-3 py-6 h-full">
+    <aside
+      style={{
+        width: 228, flexShrink: 0, background: '#1A3D5C',
+        display: 'flex', flexDirection: 'column', height: '100vh',
+        position: 'relative', zIndex: 10,
+      }}
+    >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-3 mb-8">
-        <div className="w-8 h-8 rounded-lg bg-[#4f8ef7] flex items-center justify-center">
-          <Heart size={16} fill="white" color="white" />
+      <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{
+          width: 36, height: 36, background: '#1A7FA8', borderRadius: 10,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
+        }}>
+          <Target size={20} color="white" />
         </div>
-        <div>
-          <p className="text-white font-semibold text-sm leading-tight">RecoverPT</p>
-          <p className="text-[#64748b] text-xs">Your recovery, guided</p>
-        </div>
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#fff', lineHeight: 1.2 }}>Recover</p>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>Post-Op PT Platform</p>
       </div>
 
-      <nav className="flex flex-col gap-1">
-        {links.map(({ to, icon: Icon, label }) => (
+      {/* Nav */}
+      <nav style={{
+        flex: 1, padding: '16px 12px',
+        display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto',
+      }}>
+        <p style={{
+          fontSize: 10, fontWeight: 600, letterSpacing: '0.8px',
+          color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
+          padding: '12px 8px 6px',
+        }}>
+          Main
+        </p>
+
+        {NAV_MAIN.map(({ to, label, Icon }) => (
           <NavLink
             key={to}
             to={to}
+            style={{ textDecoration: 'none' }}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              [
+                'flex items-center gap-2.5 px-2.5 py-[9px] rounded-[9px]',
+                'text-[13.5px] font-medium cursor-pointer transition-colors',
                 isActive
-                  ? 'bg-[#4f8ef7]/15 text-[#4f8ef7] font-medium'
-                  : 'text-[#94a3b8] hover:bg-[#2a2d3e] hover:text-white'
-              }`
+                  ? 'bg-white/[0.12] text-white'
+                  : 'text-white/55 hover:bg-white/[0.07] hover:text-white/85',
+              ].join(' ')
             }
           >
-            <Icon size={18} />
-            {label}
+            {({ isActive }) => (
+              <>
+                <Icon size={17} color={isActive ? '#fff' : 'rgba(255,255,255,0.55)'} />
+                <span>{label}</span>
+                {to === '/library' && !hasCheckin && (
+                  <span style={{
+                    marginLeft: 'auto', background: '#1A7FA8', color: '#fff',
+                    fontSize: 10, fontWeight: 700, padding: '1px 7px',
+                    borderRadius: 99, minWidth: 18, textAlign: 'center',
+                  }}>
+                    1
+                  </span>
+                )}
+              </>
+            )}
           </NavLink>
         ))}
+
+        <p style={{
+          fontSize: 10, fontWeight: 600, letterSpacing: '0.8px',
+          color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
+          padding: '12px 8px 6px', marginTop: 4,
+        }}>
+          Account
+        </p>
+
+        <button
+          className="flex items-center gap-2.5 px-2.5 py-[9px] rounded-[9px] text-[13.5px] font-medium cursor-pointer text-white/55 hover:bg-white/[0.07] hover:text-white/85 transition-colors w-full text-left"
+          style={{ background: 'none', border: 'none' }}
+        >
+          <Plus size={17} color="rgba(255,255,255,0.55)" />
+          New PT Plan
+        </button>
+        <button
+          className="flex items-center gap-2.5 px-2.5 py-[9px] rounded-[9px] text-[13.5px] font-medium cursor-pointer text-white/55 hover:bg-white/[0.07] hover:text-white/85 transition-colors w-full text-left"
+          style={{ background: 'none', border: 'none' }}
+        >
+          <Settings size={17} color="rgba(255,255,255,0.55)" />
+          Settings
+        </button>
       </nav>
 
-      <div className="mt-auto px-3 py-3 rounded-lg bg-[#4f8ef7]/10 border border-[#4f8ef7]/20">
-        <div className="flex items-center gap-2 mb-1">
-          <Dumbbell size={14} className="text-[#4f8ef7]" />
-          <p className="text-xs font-medium text-[#4f8ef7]">Recovery Mode</p>
+      {/* User */}
+      <div style={{
+        padding: '14px 16px', borderTop: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
+      }}>
+        <div style={{
+          width: 34, height: 34, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.15)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0,
+        }}>
+          {initials}
         </div>
-        <p className="text-xs text-[#64748b]">Form-checked exercises with AI guidance</p>
+        <div>
+          <p style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{profile.name || 'Patient'}</p>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
+            Week {weekNum} · {surgeryShort} Recovery
+          </p>
+        </div>
       </div>
     </aside>
   )

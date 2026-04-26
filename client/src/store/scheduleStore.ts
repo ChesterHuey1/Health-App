@@ -31,6 +31,7 @@ export interface ExerciseHistory {
   feedback: SessionFeedback
   jointAngles: Record<string, number>
   aiFormFeedback?: string
+  userNotes?: string
 }
 
 interface ScheduleState {
